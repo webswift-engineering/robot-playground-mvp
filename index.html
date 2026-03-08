@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Robot System Design Playground (MVP)</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>Robot Playground MVP: Perception -> Planning -> Control</h1>
+      <div class="buttons">
+        <button id="runPauseBtn">Pause</button>
+        <button id="stepBtn">Step</button>
+        <button id="resetBtn">Reset</button>
+        <button id="randomizeBtn">Randomize Obstacles</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel controls">
+        <h2>Pipeline</h2>
+
+        <h3>Perception</h3>
+        <label>
+          Sensor model
+          <select id="sensorModel">
+            <option value="perfect">Perfect</option>
+            <option value="noisy" selected>Noisy GPS + IMU</option>
+          </select>
+        </label>
+        <label>
+          Position noise <span id="noiseValue">0.6</span>
+          <input id="positionNoise" type="range" min="0" max="2" step="0.1" value="0.6" />
+        </label>
+        <label>
+          Estimator smoothing <span id="smoothingValue">0.75</span>
+          <input id="smoothing" type="range" min="0.1" max="0.95" step="0.05" value="0.75" />
+        </label>
+
+        <h3>Planning</h3>
+        <label>
+          Planner
+          <select id="planner">
+            <option value="astar" selected>A* Grid</option>
+            <option value="greedy">Greedy + Repulsion</option>
+          </select>
+        </label>
+        <label>
+          Replan every N ticks <span id="replanValue">12</span>
+          <input id="replanInterval" type="range" min="4" max="30" step="1" value="12" />
+        </label>
+
+        <h3>Control</h3>
+        <label>
+          Controller
+          <select id="controller">
+            <option value="pid" selected>Heading PID</option>
+            <option value="purePursuit">Pure Pursuit</option>
+          </select>
+        </label>
+        <label>
+          Max speed <span id="maxSpeedValue">2.2</span>
+          <input id="maxSpeed" type="range" min="0.5" max="4" step="0.1" value="2.2" />
+        </label>
+        <label>
+          Kp <span id="kpValue">3.0</span>
+          <input id="kp" type="range" min="0.5" max="8" step="0.1" value="3" />
+        </label>
+        <label>
+          Kd <span id="kdValue">0.4</span>
+          <input id="kd" type="range" min="0" max="2" step="0.1" value="0.4" />
+        </label>
+        <label>
+          Actuator lag <span id="lagValue">0.20</span>
+          <input id="actuatorLag" type="range" min="0" max="0.7" step="0.05" value="0.2" />
+        </label>
+      </section>
+
+      <section class="panel sim">
+        <h2>World</h2>
+        <canvas id="simCanvas" width="900" height="520"></canvas>
+        <p class="legend">
+          Blue: robot truth, Cyan: state estimate, Green: planned path, Gold: goal, Red: obstacles.
+        </p>
+      </section>
+
+      <section class="panel diagnostics">
+        <h2>Diagnostics</h2>
+        <div class="metrics">
+          <div><span>Tick</span><strong id="mTick">0</strong></div>
+          <div><span>Distance to goal</span><strong id="mDist">0.00</strong></div>
+          <div><span>Localization error</span><strong id="mLocErr">0.00</strong></div>
+          <div><span>Path length</span><strong id="mPath">0.00</strong></div>
+          <div><span>Control effort</span><strong id="mEffort">0.00</strong></div>
+          <div><span>Collisions</span><strong id="mCollide">0</strong></div>
+          <div><span>Reached goal</span><strong id="mReached">No</strong></div>
+        </div>
+        <h3>What happened this tick</h3>
+        <p id="explain" class="explain"></p>
+
+        <h3>LLM Copilot</h3>
+        <label>
+          Provider
+          <select id="copilotProvider">
+            <option value="heuristic" selected>Local Heuristic (no API)</option>
+            <option value="openai">OpenAI-compatible API</option>
+          </select>
+        </label>
+        <label>
+          API base URL
+          <input id="copilotBaseUrl" type="text" placeholder="https://api.openai.com/v1" />
+        </label>
+        <label>
+          Model
+          <input id="copilotModel" type="text" placeholder="gpt-4o-mini" />
+        </label>
+        <label>
+          API key
+          <input id="copilotApiKey" type="password" placeholder="Optional for local heuristic mode" />
+        </label>
+        <div class="buttons">
+          <button id="whyCollideBtn">Why did it collide?</button>
+          <button id="applySuggestionsBtn">Apply Suggestions</button>
+        </div>
+        <p id="copilotStatus" class="status">Copilot ready.</p>
+        <pre id="copilotResponse" class="copilot-output"></pre>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
