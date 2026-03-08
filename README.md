@@ -1,5 +1,8 @@
 # Robot Playground MVP
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Online-brightgreen?logo=github)](https://pagexv.github.io/robot-playground-mvp/)
+[Open the Robot Playground MVP](https://pagexv.github.io/robot-playground-mvp/)
+
 Interactive browser MVP to explain the robotics loop:
 
 - Perception -> state estimate
